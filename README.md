@@ -78,45 +78,9 @@ docker-compose up --build
 - **API**: `http://localhost:3000`
 - **Swagger Docs**: `http://localhost:3000/api`
 
-### Option B: Run Locally (Dev Mode)
+### Option B: Local Development
 
-If you want to develop or debug the code.
-
-```bash
-cd backend
-
-# 1. Install dependencies
-yarn install
-
-# 2. Start only the Database via Docker
-docker-compose up db -d
-
-# 3. Generate Prisma Client
-npx prisma generate
-
-# 4. Start the Server
-yarn start:dev
-```
-
-**Local URL**: `http://localhost:3001` (Note: Local dev sometimes defaults to 3001 to avoid conflicts)
-
----
-
-## 🧠 Challenges & Key Learnings
-
-During the development of this platform, I encountered and solved several engineering challenges:
-
-1.  **Handling Duplicate User Creation**:
-    - _Challenge_: Prisma throws a generic `P2002` error when a user email already exists, causing a 500 server crash.
-    - _Solution_: Intercepted the specific error code in the Service layer and transformed it into a meaningful **409 Conflict** exception for the client.
-
-2.  **Concurrency & File Locks**:
-    - _Challenge_: Windows file locking (`EPERM`) prevented `prisma generate` from running while the server was active.
-    - _Solution_: Established a workflow to strictly terminate node processes before regenerating the database client.
-
-3.  **Type-Safe APIs**:
-    - _Challenge_: Ensuring incoming Logs match the strict schema required for analysis.
-    - _Solution_: leveraged `class-validator` and DTOs to automatically reject malformed requests before they touch the logic layer.
+For detailed instructions on running the backend in isolation, dependencies, and testing, please refer to the [Backend API Service README](./backend/README.md).
 
 ---
 
