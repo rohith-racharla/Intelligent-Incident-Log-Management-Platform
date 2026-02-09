@@ -35,15 +35,7 @@ This platform bridges the gap between **Log Aggregation** and **Incident Managem
 
 The system is built as a robust Monolithic Service for reliability and ease of deployment, orchestrated via Docker.
 
-```mermaid
-graph TD
-    A[Client Services] -->|POST /ingest (JSON)| B(Ingestion API)
-    B -->|Validate & Persist| C[(PostgreSQL Database)]
-    D[Detection Service] -->|Cron: Check every 10s| C
-    D -->|If Threshold > 5 Errors| E[Create Incident]
-    F[Admin/SRE] -->|Auth & Manage| G(REST API)
-    G -->|JWT Guard| E
-```
+![System Architecture](assets/architecture.png)
 
 ## 🛠️ Tech Stack & Motivation
 
