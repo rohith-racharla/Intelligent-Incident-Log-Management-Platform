@@ -64,26 +64,26 @@ The system operates as a pipeline:
 ```mermaid
 flowchart TD
     %% 🎨 Visual Styles
-    classDef client fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1,rx:10,ry:10
-    classDef ingest fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20,rx:5,ry:5
-    classDef db fill:#ECEFF1,stroke:#455A64,stroke-width:2px,color:#263238,shape:cylinder
-    classDef detect fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C,rx:5,ry:5
-    classDef alert fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C,stroke-dasharray: 5 5,rx:10,ry:10
+    classDef client fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#0D47A1
+    classDef ingest fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#1B5E20
+    classDef db fill:#ECEFF1,stroke:#455A64,stroke-width:2px,color:#263238
+    classDef detect fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#4A148C
+    classDef alert fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#B71C1C,stroke-dasharray: 5 5
 
     %% 🧩 Nodes
-    Client([👤 Client Traffic]) ::: client
-    API[⚡ Ingestion API] ::: ingest
-    Buffer[📦 Batch Buffer] ::: ingest
-    DB[(🗄️ PostgreSQL)] ::: db
+    Client(["👤 Client Traffic"]) ::: client
+    API["⚡ Ingestion API"] ::: ingest
+    Buffer["📦 Batch Buffer"] ::: ingest
+    DB[("🗄️ PostgreSQL")] ::: db
 
-    subgraph Engine [🧠 Detection Engine]
+    subgraph Engine ["🧠 Detection Engine"]
         direction TB
-        Cron((⏱️ 10s)) ::: detect
-        Service[🔍 Analysis Service] ::: detect
-        Logic{📈 Z > 3.0?} ::: detect
+        Cron(("⏱️ 10s")) ::: detect
+        Service["🔍 Analysis Service"] ::: detect
+        Logic{"📈 Z > 3.0?"} ::: detect
     end
 
-    Incident([🚨 Incident Alert]) ::: alert
+    Incident(["🚨 Incident Alert"]) ::: alert
 
     %% 🔗 Flows
     Client -->|POST /ingest| API
@@ -91,12 +91,12 @@ flowchart TD
     Buffer -->|Flush (5s)| DB
 
     Cron -->|Trigger| Service
-    Service -->|1. Query Baseline (30m)| DB
-    Service -->|2. Compute Z-Score| Logic
+    Service -->|"1. Query Baseline (30m)"| DB
+    Service -->|"2. Compute Z-Score"| Logic
     Logic -->|Yes| Incident
     Logic -.->|No| DB
 
-    Incident -.->|3. Correlate Logs| DB
+    Incident -.->|"3. Correlate Logs"| DB
 ```
 
 ### Tech Stack
