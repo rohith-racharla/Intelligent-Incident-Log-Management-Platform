@@ -81,9 +81,9 @@ graph TD
 
     subgraph Detection Engine [Background Z-Score Engine]
         Cron -->|Trigger| Detector
-        Detector -->|1. Aggregate Baseline (30m)| DB
-        Detector -->|2. Compute Z-Score| Detector
-        Detector -->|3. Check Threshold (Z > 3.0)| Decision{Anomaly?}
+        Detector -->|"1. Aggregate Baseline (30m)"| DB
+        Detector -->|"2. Compute Z-Score"| Detector
+        Detector -->|"3. Check Threshold (Z > 3.0)"| Decision{Anomaly?}
         Decision -->|Yes| DB
         Decision -->|Yes| Alert
     end
