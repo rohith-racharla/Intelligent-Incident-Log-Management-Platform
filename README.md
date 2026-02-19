@@ -59,7 +59,7 @@ You can spin up the entire system (Backend + Database) with a single command usi
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/Krishna-pendyala05/Intelligent-Incident-Log-Management-Platform.git
 cd "Intelligent Incident & Log Management Platform"
 
 # Start services
