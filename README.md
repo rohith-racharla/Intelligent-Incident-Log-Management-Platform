@@ -39,6 +39,20 @@ To keep things organized, I've separated the documentation:
 
 ---
 
+## 🚀 Performance & Scalability
+
+We rigorously benchmark our system to ensure reliability under load.
+
+| Metric         | Result                                            |
+| :------------- | :------------------------------------------------ |
+| **Throughput** | **1,150+ Req/Sec** handled                        |
+| **Latency**    | **86ms** average under load                       |
+| **Security**   | **95%+** of flood traffic blocked by Rate Limiter |
+
+👉 **[View Full Benchmark Report](./BENCHMARKS.md)**
+
+---
+
 ## 🛠️ Architecture Overview
 
 The system allows services to send logs via HTTP. It aggregates them, checks for critical patterns (like high error rates), and automatically creates Incidents for the DevOps team.
