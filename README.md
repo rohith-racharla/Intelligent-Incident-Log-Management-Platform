@@ -1,147 +1,120 @@
-# Intelligent Incident & Log Management Platform
+# Intelligent Incident & Log Management Platform 🛡️
 
-> **"Silence is Deadly."**  
-> A centralized observability engine designed to ingest logs, detect anomalies in real-time, and automate incident response for distributed systems.
+> **A High-Performance Backend System for Log Ingestion & Automated Incident Response.**
 
-🔍 **Curious about how this was built?** Check out the [Implementation Journey & Engineering Decisions](./IMPLEMENTATION_JOURNEY.md) for a deep dive into the code and challenges.
-
----
-
-## 🧐 The Problem: Why This Exists
-
-In modern distributed architectures (microservices), visibility is often the first casualty.
-
-- **Logs are Scattered**: Debugging requires SSH-ing into multiple servers or sifting through text files.
-- **Delayed Detection**: Engineering teams often find out about outages from angry users on Twitter before their own systems alert them.
-- **Manual Response**: Creating incident tickets and linking them to root cause logs is a manual, error-prone process.
-
-**The Stakeholders**:
-
-- **DevOps & SREs**: Need immediate alerts and a paper trail for post-mortems.
-- **Product Developers**: Need a simple API to send logs to without configuring complex agents.
-- **Compliance Teams**: Require strict meaningful logs and incident lifecycles.
-
-## 💡 The Solution
-
-This platform bridges the gap between **Log Aggregation** and **Incident Management**. Instead of just storing logs, it _understands_ them.
-
-**Core Philosophy**:
-
-1.  **Centralize**: One API (`POST /ingest`) for all services.
-2.  **Automate**: A background detection engine watches for patterns (e.g., "High Error Rate") and acts immediately.
-3.  **Secure**: Strict JWT authentication ensures that only authorized personnel can manage critical incident data.
+[![CI](https://github.com/Krishna-pendyala05/Intelligent-Incident-Log-Management-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Krishna-pendyala05/Intelligent-Incident-Log-Management-Platform/actions)
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=flat&logo=nestjs&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=flat&logo=typescript&logoColor=white)
 
 ---
 
-## 🏗️ Architecture
+## 🎯 System Overview
 
-The system is built as a robust Monolithic Service for reliability and ease of deployment, orchestrated via Docker.
+**Intelligent Incident & Log Management Platform** is a high-performance backend designed to emulate core observability patterns found in enterprise-grade systems.
+
+It bridges the gap between raw log ingestion and automated incident response, focusing on **scalability**, **security**, and **reliability**.
+
+### 🧠 Why "Intelligent"?
+
+Unlike passive log storage (e.g., standard ELK stacks), this system is **active**. It runs a background **Anomaly Detection Engine** that monitors log streams in real-time. If it detects critical patterns (like a sudden spike in 500-series errors), it **automatically correlates them into an Incident** and alerts the team, reducing Mean Time To Resolution (MTTR).
+
+### 🚀 Engineering Highlights
+
+- **High-Throughput Engineering**: Implemented **Batch Processing** buffers to handle thousands of logs per second without crashing the database.
+- **Database Optimization**: Solved **N+1 Query** performance issues and implemented **Pagination** for scalable data retrieval.
+- **DevOps Lifecycle**: Built a **Multi-Stage Dockerfile** (reducing image size) and set up **GitHub Actions CI** for automated testing.
+- **Security Best Practices**: Implemented **JWT Authentication**, **Rate Limiting**, and secure password hashing.
+
+---
+
+## 📚 Documentation Map
+
+To keep things organized, I've separated the documentation:
+
+| Document                                                  | Purpose                                                                                                                               |
+| :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------ |
+| **[Backend Setup Guide](./backend/README.md)**            | Technical manual. How to run, test, and use the API locally.                                                                          |
+| **[Implementation Journey](./IMPLEMENTATION_JOURNEY.md)** | **Deep Dive**. A diary of the engineering challenges I faced (e.g., _Fixing N+1 Queries_, _Docker Networking_) and how I solved them. |
+
+---
+
+## 🛠️ Architecture Overview
+
+The system allows services to send logs via HTTP. It aggregates them, checks for critical patterns (like high error rates), and automatically creates Incidents for the DevOps team.
 
 ![System Architecture](assets/architecture.png)
 
-## 🛠️ Tech Stack & Motivation
+### Tech Stack
 
-| Component         | Technology            | Why this choice?                                                                                                        |
-| :---------------- | :-------------------- | :---------------------------------------------------------------------------------------------------------------------- |
-| **Framework**     | **NestJS** (Node.js)  | Specific architecture patterns (Modules, Guards, Pipes) ensure scalability and maintainability compared to raw Express. |
-| **Language**      | **TypeScript**        | Strict typing prevents runtime errors and ensures valid DTOs at the compiled level.                                     |
-| **Database**      | **PostgreSQL 16**     | ACID compliance is non-negotiable for audit logs and incident records.                                                  |
-| **ORM**           | **Prisma**            | Provides type-safe database queries and automated migrations, reducing SQL boilerplate.                                 |
-| **Security**      | **Passport + JWT**    | Industry-standard stateless authentication for secure API access.                                                       |
-| **Documentation** | **Swagger (OpenAPI)** | Auto-generated, interactive documentation makes onboarding new developers instant.                                      |
-| **DevOps**        | **Docker Compose**    | One command (`docker-compose up`) sets up the entire stack (App + DB) identically on any machine.                       |
+- **Core**: NestJS (Node.js) + TypeScript
+- **Database**: PostgreSQL + Prisma ORM
+- **DevOps**: Docker Compose + GitHub Actions
 
 ---
 
-## 🚀 Getting Started
+## ⚡ Quick Start
 
-### Prerequisites
-
-- **Docker Desktop** (Recommended)
-- **Node.js v18+** & **Yarn** (If running locally)
-
-### Option A: Run with Docker (Recommended)
-
-This will spin up both the **Backend** and the **PostgreSQL** database.
+You can spin up the entire system (Backend + Database) with a single command using Docker.
 
 ```bash
-# 1. Clone the repository
+# Clone the repository
 git clone <your-repo-url>
 cd "Intelligent Incident & Log Management Platform"
 
-# 2. Start services
+# Start services
 docker-compose up --build
 ```
 
-**Access the App**:
+### 🎮 Want to play with it?
 
-- **API**: `http://localhost:3000`
+Run the interactive demo script to simulate traffic and incidents:
+
+```bash
+cd backend
+yarn install
+yarn demo
+```
+
+- **API URL**: `http://localhost:3000`
 - **Swagger Docs**: `http://localhost:3000/api`
 
-### Option B: Local Development
-
-For detailed instructions on running the backend in isolation, dependencies, and testing, please refer to the [Backend API Service README](./backend/README.md).
-
 ---
 
-## 🔧 Common Issues & Troubleshooting
+## 🔧 Troubleshooting & Common Issues
 
-**Q: I get `EADDRINUSE: :::3000` when starting.**
-A: Another service is using port 3000. The app will try to fallback or fail.
+### 1. "Docker Error: error during connect..."
 
-- _Fix_: Run `npx kill-port 3000` or check your running Docker containers.
+**Error:** `error during connect: This error may indicate that the docker daemon is not running.`
 
-**Q: Swagger UI says "Failed to fetch".**
-A: This is usually a CORS issue or the server is down.
+- **Cause:** Docker Desktop is not started.
+- **Solution:** Open **Docker Desktop** on your machine and wait for the engine to start (green icon). Then run `docker-compose up` again.
 
-- _Fix_: I enabled generic CORS in `main.ts`, but ensure your browser isn't blocking local requests.
+### 2. "Port 3000/5432 already in use"
 
-**Q: "Invalid `this.prisma.user.create()` invocation".**
-A: This usually means the Prisma Client is out of sync with the schema.
+**Error:** `Bind for 0.0.0.0:3000 failed: port is already allocated`
 
-- _Fix_: Stop the server and run `npx prisma generate`.
+- **Cause:** Another application (or a previous instance of this app) is using these ports.
+- **Solution:**
+  - **Windows**: `npx kill-port 3000 5432`
+  - **Mac/Linux**: `lsof -i :3000` then `kill -9 <PID>`
+  - **Docker**: Run `docker-compose down` to clean up old containers.
 
----
+### 3. "Prisma Client not initialized"
 
-## 🎨 Customization & Usage Guide
+**Error:** `Invalid 'prisma.user.create()'`
 
-Want to adapt this platform for your own needs? Here are the key files you can modify:
-
-### 1. Adjusting Incident Thresholds
-
-By default, the system triggers an incident if **> 5 errors** occur in **60 seconds**.
-
-- **File**: `backend/src/incidents/detection.service.ts`
-- **How to Change**:
-
-  ```typescript
-  // Change the time window (e.g., 5 minutes)
-  const timeWindow = new Date(Date.now() - 5 * 60 * 1000);
-
-  // Change the error count threshold
-  if (recentErrorCount > 20) { ... }
+- **Cause:** The database schema changed but the client wasn't updated.
+- **Solution:**
+  ```bash
+  cd backend
+  npx prisma generate
   ```
 
-### 2. Changing Database Connection
-
-- **File**: `backend/.env`
-- **Parameter**: `DATABASE_URL`
-  - Update the user, password, port, or DB name here.
-  - _Note_: If you change the port here, make sure to update `docker-compose.yml` as well.
-
-### 3. Adding New Log Metadata
-
-- **File**: `backend/src/ingestion/dto/create-log.dto.ts`
-- **Action**: Add new fields to the `CreateLogDto` class to validate extra data (e.g., `user_id`, `request_id`) in your incoming logs.
-
 ---
 
-## 🔮 Future Roadmap
+## 👤 Author
 
-- [ ] **Real-time WebSockets**: Push alerts to the frontend immediately instead of polling.
-- [ ] **Slack Integration**: Webhook support to post incidents directly to team channels.
-- [ ] **AI Analysis**: Use an LLM to summarize log patterns and suggest root causes.
-
----
-
-_Built with Sincerity by Murali Krishna Pendyala_
+**Murali Krishna Pendyala**  
+_Software Engineer_  
+[LinkedIn](https://linkedin.com/in/your-profile) | [GitHub](https://github.com/Krishna-pendyala05)

@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -42,6 +43,13 @@ model Log {
 
   @@index([service_id, timestamp(sort: Desc)])
   @@index([level])
+  @@index([level, timestamp, incident_id])
+}
+
+model CronLock {
+  id        String   @id
+  lockedAt  DateTime
+  expiry    DateTime
 }
 
 model Incident {

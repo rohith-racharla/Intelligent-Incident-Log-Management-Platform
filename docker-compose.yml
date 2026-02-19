@@ -3,11 +3,14 @@ version: "3.8"
 services:
   app:
     build: ./backend
+    container_name: iilmp_app
     ports:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://admin:password123@db:5432/logs_db?schema=public
       JWT_SECRET: supersecret
+      THROTTLE_TTL: 60000
+      THROTTLE_LIMIT: 100
     depends_on:
       - db
     restart: always
