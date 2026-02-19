@@ -2,17 +2,35 @@ import { DetectionService } from './detection.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { IncidentsService } from './incidents.service';
 
+// Helper: Mock interface to satisfy linter
+interface PrismaServiceMock {
+  cronLock: {
+    findUnique: jest.Mock;
+    create: jest.Mock;
+    delete: jest.Mock;
+  };
+  log: {
+    count: jest.Mock;
+    updateMany: jest.Mock;
+  };
+  $queryRaw: jest.Mock;
+}
+
+interface IncidentsServiceMock {
+  create: jest.Mock;
+}
+
 // Helper: default mocks for a clean lock cycle (no existing lock, create succeeds)
-function mockCleanLock(prismaMock: any) {
+function mockCleanLock(prismaMock: PrismaServiceMock) {
   prismaMock.cronLock.findUnique.mockResolvedValue(null); // No existing lock
-  prismaMock.cronLock.create.mockResolvedValue({});       // Lock acquired
-  prismaMock.cronLock.delete.mockResolvedValue({});       // Lock released
+  prismaMock.cronLock.create.mockResolvedValue({}); // Lock acquired
+  prismaMock.cronLock.delete.mockResolvedValue({}); // Lock released
 }
 
 describe('DetectionService', () => {
   let service: DetectionService;
-  let prismaMock: any;
-  let incidentsMock: any;
+  let prismaMock: PrismaServiceMock;
+  let incidentsMock: IncidentsServiceMock;
 
   beforeEach(() => {
     prismaMock = {
@@ -47,7 +65,10 @@ describe('DetectionService', () => {
 
   it('should skip detection when lock is held by another instance', async () => {
     const futureExpiry = new Date(Date.now() + 5000);
-    prismaMock.cronLock.findUnique.mockResolvedValue({ id: 'lock', expiry: futureExpiry });
+    prismaMock.cronLock.findUnique.mockResolvedValue({
+      id: 'lock',
+      expiry: futureExpiry,
+    });
 
     await service.handleCron();
 
@@ -62,8 +83,11 @@ describe('DetectionService', () => {
 
     // Baseline: Mean ≈ 10.6, StdDev ≈ 0.8
     prismaMock.$queryRaw.mockResolvedValue([
-      { loading: 10 }, { loading: 12 }, { loading: 10 },
-      { loading: 11 }, { loading: 10 },
+      { loading: 10 },
+      { loading: 12 },
+      { loading: 10 },
+      { loading: 11 },
+      { loading: 10 },
     ]);
     // Current = 11 → Z = (11 - 10.6) / 0.8 ≈ 0.5 → well below threshold
     prismaMock.log.count.mockResolvedValue(11);
@@ -78,8 +102,12 @@ describe('DetectionService', () => {
 
     // Baseline: Mean = 10, StdDev ≈ 1.8 (some variance)
     prismaMock.$queryRaw.mockResolvedValue([
-      { loading: 8 }, { loading: 10 }, { loading: 12 },
-      { loading: 9 }, { loading: 11 }, { loading: 10 },
+      { loading: 8 },
+      { loading: 10 },
+      { loading: 12 },
+      { loading: 9 },
+      { loading: 11 },
+      { loading: 10 },
     ]);
     // Current = 50 → Z = (50 - 10) / 1.8 ≈ 22 → massive anomaly
     prismaMock.log.count.mockResolvedValue(50);
@@ -88,6 +116,7 @@ describe('DetectionService', () => {
 
     expect(incidentsMock.create).toHaveBeenCalledWith(
       expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         title: expect.stringContaining('Anomaly Detected'),
       }),
     );
@@ -124,7 +153,9 @@ describe('DetectionService', () => {
 
     // Only 3 baseline buckets — not enough for reliable stats
     prismaMock.$queryRaw.mockResolvedValue([
-      { loading: 5 }, { loading: 3 }, { loading: 4 },
+      { loading: 5 },
+      { loading: 3 },
+      { loading: 4 },
     ]);
 
     await service.handleCron();
