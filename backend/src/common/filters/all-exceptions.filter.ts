@@ -23,17 +23,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const responseBody = {
+    const responseBody: {
+      statusCode: number;
+      timestamp: string;
+      path: string;
+      message: string | object;
+    } = {
       statusCode: httpStatus,
       timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()),
+      path: httpAdapter.getRequestUrl(ctx.getRequest()) as string,
       message:
         exception instanceof HttpException
           ? exception.getResponse()
           : 'Internal server error',
     };
 
-    if (httpStatus === HttpStatus.INTERNAL_SERVER_ERROR) {
+    if (httpStatus === (HttpStatus.INTERNAL_SERVER_ERROR as number)) {
       this.logger.error('Internal Server Error', exception);
     } else {
       this.logger.warn(`Exception: ${JSON.stringify(responseBody)}`);

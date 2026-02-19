@@ -1,4 +1,11 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -13,10 +20,13 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Return access token.' })
   @HttpCode(HttpStatus.OK)
   async login(@Body() signInDto: LoginDto) {
-    const user = await this.authService.validateUser(signInDto.email, signInDto.password);
+    const user = await this.authService.validateUser(
+      signInDto.email,
+      signInDto.password,
+    );
     if (!user) {
-      throw new Promise((_, reject) => reject(new Error('Unauthorized')));
+      throw new UnauthorizedException();
     }
-    return this.authService.login(user);
+    return this.authService.login(user); // No await needed as it is synchronous now
   }
 }

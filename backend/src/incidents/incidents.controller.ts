@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { IncidentsService } from './incidents.service';
 import { CreateIncidentDto } from './dto/create-incident.dto';
 import { UpdateIncidentDto } from './dto/update-incident.dto';
@@ -44,7 +56,10 @@ export class IncidentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIncidentDto: UpdateIncidentDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateIncidentDto: UpdateIncidentDto,
+  ) {
     return this.incidentsService.update(id, updateIncidentDto);
   }
 

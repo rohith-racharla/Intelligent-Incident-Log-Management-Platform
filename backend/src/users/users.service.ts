@@ -18,7 +18,7 @@ export class UsersService {
         },
       });
     } catch (error) {
-      if (error.code === 'P2002') {
+      if ((error as { code: string }).code === 'P2002') {
         throw new ConflictException('Email already exists');
       }
       throw error;

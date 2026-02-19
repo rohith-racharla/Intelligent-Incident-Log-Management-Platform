@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
@@ -24,7 +25,9 @@ describe('Critical Flow (e2e)', () => {
   afterAll(async () => {
     await prismaService.user.deleteMany({ where: { email: 'e2e@test.com' } });
     if (incidentId) {
-      await prismaService.log.deleteMany({ where: { incident_id: incidentId } });
+      await prismaService.log.deleteMany({
+        where: { incident_id: incidentId },
+      });
       await prismaService.incident.delete({ where: { id: incidentId } });
     }
     await app.close();

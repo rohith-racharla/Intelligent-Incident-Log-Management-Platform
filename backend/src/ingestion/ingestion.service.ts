@@ -43,18 +43,18 @@ export class IngestionService implements OnModuleDestroy {
       });
       this.logger.log(`Flushed ${logsToInsert.length} logs to database.`);
     } catch (error) {
-      this.logger.error('Failed to flush logs', error.stack);
+      this.logger.error('Failed to flush logs', (error as Error).stack);
     }
   }
 
   async onModuleDestroy() {
     try {
-        if (this.schedulerRegistry.doesExist('interval', this.INTERVAL_NAME)) {
-            this.schedulerRegistry.deleteInterval(this.INTERVAL_NAME);
-        }
-        await this.flushLogs();
-    } catch (e) {
-        // Ignore errors during shutdown
+      if (this.schedulerRegistry.doesExist('interval', this.INTERVAL_NAME)) {
+        this.schedulerRegistry.deleteInterval(this.INTERVAL_NAME);
+      }
+      await this.flushLogs();
+    } catch {
+      // Ignore errors during shutdown
     }
   }
 }

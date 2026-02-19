@@ -11,11 +11,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.enableShutdownHooks();
   app.useLogger(app.get(Logger));
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
-  
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }),
+  );
+
   const httpAdapter = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
-  
+
   app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Incident Management API')
@@ -29,6 +31,5 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
-
 }
-bootstrap();
+void bootstrap();

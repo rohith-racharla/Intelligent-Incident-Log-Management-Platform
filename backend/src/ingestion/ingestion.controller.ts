@@ -8,8 +8,8 @@ export class IngestionController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async ingestLog(@Body() createLogDto: CreateLogDto) {
-    this.ingestionService.processLog(createLogDto);
+  ingestLog(@Body() createLogDto: CreateLogDto) {
+    void this.ingestionService.processLog(createLogDto);
     return { status: 'success', received: true };
   }
 }

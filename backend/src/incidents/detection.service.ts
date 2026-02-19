@@ -20,7 +20,9 @@ export class DetectionService {
 
     // 1. Try to acquire lock
     // Check if lock exists
-    const existingLock = await this.prisma.cronLock.findUnique({ where: { id: lockId } });
+    const existingLock = await this.prisma.cronLock.findUnique({
+      where: { id: lockId },
+    });
 
     if (existingLock) {
       if (existingLock.expiry > now) {
@@ -28,7 +30,9 @@ export class DetectionService {
         return;
       }
       // Expired, delete it so we can re-acquire
-      await this.prisma.cronLock.delete({ where: { id: lockId } }).catch(() => {});
+      await this.prisma.cronLock
+        .delete({ where: { id: lockId } })
+        .catch(() => {});
     }
 
     try {
@@ -39,9 +43,9 @@ export class DetectionService {
           expiry: new Date(now.getTime() + 9000), // 9s expiry
         },
       });
-    } catch (error) {
-       this.logger.debug('Could not acquire lock (race condition). Skipping.');
-       return;
+    } catch {
+      this.logger.debug('Could not acquire lock (race condition). Skipping.');
+      return;
     }
 
     try {
@@ -55,10 +59,14 @@ export class DetectionService {
         },
       });
 
-      this.logger.debug(`Checking for incidents... Found ${recentErrorCount} recent errors.`);
+      this.logger.debug(
+        `Checking for incidents... Found ${recentErrorCount} recent errors.`,
+      );
 
       if (recentErrorCount > 5) {
-        this.logger.warn(`High error rate detected (${recentErrorCount} errors). Creating incident...`);
+        this.logger.warn(
+          `High error rate detected (${recentErrorCount} errors). Creating incident...`,
+        );
 
         const incident = await this.incidentsService.create({
           title: `High Error Rate Detected: ${recentErrorCount} errors in last minute`,
@@ -82,7 +90,9 @@ export class DetectionService {
       // --- ORIGINAL LOGIC END ---
     } finally {
       // Release lock
-      await this.prisma.cronLock.delete({ where: { id: lockId } }).catch(() => {});
+      await this.prisma.cronLock
+        .delete({ where: { id: lockId } })
+        .catch(() => {});
     }
   }
 }
